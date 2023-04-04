@@ -382,13 +382,12 @@ int rbtree_erase(rbtree *tree, node_t *p)
     removed_node_parent = p->parent;
     replace_node = replace_to_child(tree, p, removed_node_parent);
   }
-  if (is_removed_black)
+  if (is_removed_black && replace_node->color == RBTREE_RED)
   {
-    if (replace_node->color == RBTREE_RED)
-    {
-      replace_node->color = RBTREE_BLACK;
-      return 0;
-    }
+    replace_node->color = RBTREE_BLACK;
+    return 0;
+  }
+  else if (is_removed_black && replace_node->color == RBTREE_BLACK)
     rbtree_erase_fixup(tree, removed_node_parent, is_left);
   return 0;
 }
