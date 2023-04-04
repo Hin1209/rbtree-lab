@@ -339,9 +339,10 @@ void rbtree_erase_fixup(rbtree *tree, node_t *parent_node, int is_left)
   }
 }
 
-void replace_to_successor(rbtree *tree, node_t *p, node_t *successor, node_t *removed_node_parent)
+node_t *replace_to_successor(rbtree *tree, node_t *p, node_t *successor, node_t *removed_node_parent)
 {
   int has_right_child = (successor->right != tree->nil) ? 1 : 0;
+  node_t *replace_node = successor->right;
 
   p->key = successor->key;
   if (is_node_left(successor))
@@ -362,9 +363,10 @@ void replace_to_successor(rbtree *tree, node_t *p, node_t *successor, node_t *re
       successor->right->parent = removed_node_parent;
     }
   }
+  return replace_node;
 }
 
-void replace_to_child(rbtree *tree, node_t *p, node_t *removed_node_parent)
+node_t *replace_to_child(rbtree *tree, node_t *p, node_t *removed_node_parent)
 {
   node_t *left_node = p->left;
   node_t *right_node = p->right;
@@ -381,6 +383,7 @@ void replace_to_child(rbtree *tree, node_t *p, node_t *removed_node_parent)
     removed_node_parent->right = replace_node;
   replace_node->parent = removed_node_parent;
   free(p);
+  return replace_node;
 }
 
 int rbtree_erase(rbtree *tree, node_t *p)
