@@ -275,25 +275,25 @@ void rbtree_erase_fixup(rbtree *tree, node_t *parent_node, int is_left)
   }
   else if (sibling_node->color == RBTREE_BLACK)
   {
-    if (priority->color == RBTREE_RED)
+    if (outside_child->color == RBTREE_RED)
     {
       if (is_left)
         left_rotate(tree, sibling_node);
       else
         right_rotate(tree, sibling_node);
       exchange_color(sibling_node, parent_node);
-      priority->color = RBTREE_BLACK;
+      outside_child->color = RBTREE_BLACK;
     }
-    else if (priority->color == RBTREE_BLACK && secondary->color == RBTREE_RED)
+    else if (outside_child->color == RBTREE_BLACK && inside_child->color == RBTREE_RED)
     {
       if (is_left)
-        right_rotate(tree, secondary);
+        right_rotate(tree, inside_child);
       else
-        left_rotate(tree, secondary);
-      exchange_color(sibling_node, secondary);
+        left_rotate(tree, inside_child);
+      exchange_color(sibling_node, inside_child);
       rbtree_erase_fixup(tree, parent_node, is_left);
     }
-    else if (priority->color == RBTREE_BLACK && secondary->color == RBTREE_BLACK)
+    else if (outside_child->color == RBTREE_BLACK && inside_child->color == RBTREE_BLACK)
     {
       sibling_node->color = RBTREE_RED;
       if (parent_node == tree->root)
