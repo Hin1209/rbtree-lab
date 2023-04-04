@@ -88,9 +88,124 @@ void left_rotate(rbtree *tree, node_t *node)
   parent_node->parent = node;
 }
 
+void rbtree_insert_fixup(rbtree *tree, node_t *node)
+{
+  if (node == tree->root)
+  {
+    node->color = RBTREE_BLACK;
+    return;
+  }
+
+  node_t *parent_node = node->parent;
+  if (parent_node->color == RBTREE_BLACK)
+    return;
+
+  node_t *grand_parent_node = parent_node->parent;
+  node_t *uncle_node;
+  int is_parent_left;
+  int is_left_child;
+
+  if (grand_parent_node->left == parent_node)
+  {
+    uncle_node = grand_parent_node->right;
+    is_parent_left = 1;
+  }
+  else
+  {
+    uncle_node = grand_parent_node->left;
+    is_parent_left = 0;
+  }
+
+  if (node == parent_node->left)
+    is_left_child = 1;
+  else
+    is_left_child = 0;
+
+  if (uncle_node->color == RBTREE_RED)
+  {
+    grand_parent_node->color = RBTREE_RED;
+    parent_node->color = RBTREE_BLACK;
+    uncle_node->color = RBTREE_BLACK;
+    rbtree_insert_fixup(tree, grand_parent_node);
+  }
+  else
+  {
+    if (is_parent_left)
+    {
+      if (is_left_child)
+      {
+        right_rotate(tree, node->parent);
+        node->parent->color = RBTREE_BLACK;
+        node->parent->right->color = RBTREE_RED;
+      }
+      else
+      {
+        left_rotate(tree, node);
+        right_rotate(tree, node);
+        node->color = RBTREE_BLACK;
+        node->right->color = RBTREE_RED;
+      }
+    }
+    else
+    {
+      if (is_left_child)
+      {
+        right_rotate(tree, node);
+        left_rotate(tree, node);
+        node->color = RBTREE_BLACK;
+        node->left->color = RBTREE_RED;
+      }
+      else
+      {
+        left_rotate(tree, node->parent);
+        node->parent->color = RBTREE_BLACK;
+        node->parent->left->color = RBTREE_RED;
+      }
+    }
+  }
+}
+
 node_t *rbtree_insert(rbtree *t, const key_t key)
 {
   // TODO: implement insert
+  node_t *node = (node_t *)malloc(sizeof(node_t));
+  node->key = key;
+  node->color = RBTREE_RED;
+  node->left = node->right = t->nil;
+
+  if (t->root == t->nil)
+  {
+    t->root = node;
+    node->parent = t->nil;
+    return node;
+  }
+
+  node_t *current_node = t->root;
+  while (1)
+  {
+    if (current_node->key <= key)
+    {
+      if (current_node->right == t->nil)
+      {
+        current_node->right = node;
+        node->parent = current_node;
+        break;
+      }
+      current_node = current_node->right;
+    }
+    else
+    {
+      if (current_node->left == t->nil)
+      {
+        current_node->left = node;
+        node->parent = current_node;
+        break;
+      }
+      current_node = current_node->left;
+    }
+  }
+
+  rbtree_insert_fixup(t, node);
   return t->root;
 }
 
