@@ -177,45 +177,36 @@ node_t *rbtree_insert(rbtree *tree, const key_t key)
 {
   node_t *node = (node_t *)malloc(sizeof(node_t));
   node_t *current_node = tree->root;
-  node_t *next_node;
-
-  int is_left;
 
   node->key = key;
   node->color = RBTREE_RED;
   node->left = node->right = tree->nil;
 
-  if (tree->root == tree->nil)
-  {
-    tree->root = node;
-    node->parent = tree->nil;
-    rbtree_insert_fixup(tree, node);
-    return node;
-  }
-
-  while (1)
+  while (current_node != tree->nil)
   {
     if (current_node->key <= key)
     {
-      next_node = current_node->right;
-      is_left = 0;
+      if (current_node->right == tree->nil)
+      {
+        current_node->right = node;
+        break;
+      }
+      current_node = current_node->right;
     }
     else
     {
-      next_node = current_node->left;
-      is_left = 1;
-    }
-    if (next_node == tree->nil)
-    {
-      if (is_left)
+      if (current_node->left == tree->nil)
+      {
         current_node->left = node;
-      else
-        current_node->right = node;
-      node->parent = current_node;
-      break;
+        break;
+      }
+      current_node = current_node->left;
     }
-    current_node = next_node;
   }
+  node->parent = current_node;
+
+  if (current_node == tree->nil)
+    tree->root = node;
 
   rbtree_insert_fixup(tree, node);
   return node;
