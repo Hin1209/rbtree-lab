@@ -162,14 +162,12 @@ void rbtree_insert_fixup(rbtree *tree, node_t *node)
   }
   else
   {
-    if (is_node_left(parent_node))
+    if (is_node_left(parent_node) && is_node_left(node))
     {
-      if (is_node_left(node))
-      {
-        right_rotate(tree, node->parent);
-        node->parent->color = RBTREE_BLACK;
-        node->parent->right->color = RBTREE_RED;
-      }
+      right_rotate(tree, node->parent);
+      node->parent->color = RBTREE_BLACK;
+      node->parent->right->color = RBTREE_RED;
+    }
       else
       {
         left_rotate(tree, node);
