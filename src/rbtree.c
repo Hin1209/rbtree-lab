@@ -402,5 +402,16 @@ int rbtree_erase(rbtree *t, node_t *p)
 int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
 {
   // TODO: implement to_array
+  node_t *current_node = rbtree_min(t);
+  arr[0] = current_node->key;
+  for (int i = 1; i < n; i++)
+  {
+    if (current_node == t->nil)
+      break;
+    current_node = get_successor(t, current_node);
+    if (current_node == t->nil)
+      break;
+    arr[i] = current_node->key;
+  }
   return 0;
 }
