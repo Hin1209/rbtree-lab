@@ -112,6 +112,8 @@ void left_rotate(rbtree *tree, node_t *node)
 
     node->parent = grand_parent_node;
   }
+
+  node->left = parent_node;
   parent_node->parent = node;
 }
 
