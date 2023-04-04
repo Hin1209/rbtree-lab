@@ -20,6 +20,32 @@ void delete_rbtree(rbtree *t)
   free(t);
 }
 
+node_t *get_successor(rbtree *t, node_t *p)
+{
+  if (p == rbtree_max(t))
+    return t->nil;
+  if (p == t->nil)
+    return p;
+  node_t *current_node;
+  if (p->right == t->nil)
+  {
+    current_node = p;
+    while (1)
+    {
+      if (current_node->parent->right == current_node)
+        current_node = current_node->parent;
+      else
+        return current_node->parent;
+    }
+  }
+  current_node = p->right;
+
+  while (current_node->left != t->nil)
+    current_node = current_node->left;
+
+  return current_node;
+}
+
 void right_rotate(rbtree *tree, node_t *node)
 {
   node_t *parent_node = node->parent;
