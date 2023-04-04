@@ -14,9 +14,22 @@ rbtree *new_rbtree(void)
   return tree;
 }
 
+void node_is_free(rbtree *t, node_t *p)
+{
+  if (p->left != t->nil)
+    node_is_free(t, p->left);
+  if (p->right != t->nil)
+    node_is_free(t, p->right);
+  free(p);
+}
+
 void delete_rbtree(rbtree *t)
 {
   // TODO: reclaim the tree nodes's memory
+  node_t *start = t->root;
+  if (start != t->nil)
+    node_is_free(t, start);
+  free(t->nil);
   free(t);
 }
 
