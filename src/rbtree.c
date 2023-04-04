@@ -61,8 +61,6 @@ node_t *get_successor(rbtree *t, node_t *p)
         return current_node->parent;
       else
         current_node = current_node->parent;
-      else
-        return current_node->parent;
     }
   }
   current_node = p->right;
@@ -168,29 +166,25 @@ void rbtree_insert_fixup(rbtree *tree, node_t *node)
       node->parent->color = RBTREE_BLACK;
       node->parent->right->color = RBTREE_RED;
     }
-      else
-      {
-        left_rotate(tree, node);
-        right_rotate(tree, node);
-        node->color = RBTREE_BLACK;
-        node->right->color = RBTREE_RED;
-      }
-    }
-    else
+    else if (is_node_left(parent_node) && !is_node_left(node))
     {
-      if (is_node_left(node))
-      {
-        right_rotate(tree, node);
-        left_rotate(tree, node);
-        node->color = RBTREE_BLACK;
-        node->left->color = RBTREE_RED;
-      }
-      else
-      {
-        left_rotate(tree, node->parent);
-        node->parent->color = RBTREE_BLACK;
-        node->parent->left->color = RBTREE_RED;
-      }
+      left_rotate(tree, node);
+      right_rotate(tree, node);
+      node->color = RBTREE_BLACK;
+      node->right->color = RBTREE_RED;
+    }
+    else if (!is_node_left(parent_node) && is_node_left(node))
+    {
+      right_rotate(tree, node);
+      left_rotate(tree, node);
+      node->color = RBTREE_BLACK;
+      node->left->color = RBTREE_RED;
+    }
+    else if (!is_node_left(parent_node) && !is_node_left(node))
+    {
+      left_rotate(tree, node->parent);
+      node->parent->color = RBTREE_BLACK;
+      node->parent->left->color = RBTREE_RED;
     }
   }
 }
