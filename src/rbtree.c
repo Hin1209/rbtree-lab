@@ -354,9 +354,7 @@ int rbtree_erase(rbtree *tree, node_t *p)
 {
   node_t *right_node = p->right;
   node_t *left_node = p->left;
-  node_t *removed_node_parent;
-  node_t *successor_node;
-  node_t *replace_node;
+  node_t *removed_node_parent, *successor_node, *replace_node;
 
   int is_removed_black;
   int is_left;
