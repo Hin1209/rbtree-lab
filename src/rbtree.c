@@ -47,8 +47,6 @@ node_t *get_successor(const rbtree *tree, node_t *p)
 {
   if (p == rbtree_max(tree))
     return tree->nil;
-  if (p == tree->nil)
-    return p;
   node_t *current_node;
   if (p->right == tree->nil)
   {
