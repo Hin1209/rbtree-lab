@@ -5,7 +5,6 @@
 rbtree *new_rbtree(void)
 {
   rbtree *tree = (rbtree *)calloc(1, sizeof(rbtree));
-  // TODO: initialize struct if needed
   node_t *nil = (node_t *)calloc(1, sizeof(node_t));
   nil->color = RBTREE_BLACK;
   tree->nil = nil;
@@ -37,7 +36,6 @@ void node_is_free(rbtree *tree, node_t *p)
 
 void delete_rbtree(rbtree *tree)
 {
-  // TODO: reclaim the tree nodes's memory
   node_t *start = tree->root;
   if (start != tree->nil)
     node_is_free(tree, start);
@@ -189,7 +187,6 @@ void rbtree_insert_fixup(rbtree *tree, node_t *node)
 
 node_t *rbtree_insert(rbtree *tree, const key_t key)
 {
-  // TODO: implement insert
   node_t *node = (node_t *)malloc(sizeof(node_t));
   node->key = key;
   node->color = RBTREE_RED;
@@ -234,7 +231,6 @@ node_t *rbtree_insert(rbtree *tree, const key_t key)
 
 node_t *rbtree_find(const rbtree *tree, const key_t key)
 {
-  // TODO: implement find
   node_t *current_node = tree->root;
   while (key != current_node->key)
   {
@@ -252,7 +248,6 @@ node_t *rbtree_find(const rbtree *tree, const key_t key)
 
 node_t *rbtree_min(const rbtree *tree)
 {
-  // TODO: implement find
   node_t *current_node = tree->root;
   while (current_node != tree->nil && current_node->left != tree->nil)
     current_node = current_node->left;
@@ -262,7 +257,6 @@ node_t *rbtree_min(const rbtree *tree)
 
 node_t *rbtree_max(const rbtree *tree)
 {
-  // TODO: implement find
   node_t *current_node = tree->root;
   while (current_node != tree->nil && current_node->right != tree->nil)
     current_node = current_node->right;
@@ -387,7 +381,6 @@ void replace_to_child(rbtree *tree, node_t *p, node_t *removed_node_parent)
 
 int rbtree_erase(rbtree *tree, node_t *p)
 {
-  // TODO: implement erase
   node_t *right_node = p->right;
   node_t *left_node = p->left;
   node_t *removed_node_parent;
@@ -427,7 +420,6 @@ int rbtree_erase(rbtree *tree, node_t *p)
 
 int rbtree_to_array(const rbtree *tree, key_t *arr, const size_t n)
 {
-  // TODO: implement to_array
   node_t *current_node = rbtree_min(tree);
   arr[0] = current_node->key;
   for (int i = 1; i < n; i++)
