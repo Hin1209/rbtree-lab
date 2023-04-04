@@ -136,11 +136,11 @@ void rbtree_insert_fixup(rbtree *tree, node_t *node)
   }
 
   node_t *parent_node = node->parent;
-  if (parent_node->color == RBTREE_BLACK)
-    return;
-
   node_t *grand_parent_node = parent_node->parent;
   node_t *uncle_node;
+
+  if (parent_node->color == RBTREE_BLACK)
+    return;
 
   if (is_node_left(parent_node))
     uncle_node = grand_parent_node->right;
@@ -154,7 +154,7 @@ void rbtree_insert_fixup(rbtree *tree, node_t *node)
     uncle_node->color = RBTREE_BLACK;
     rbtree_insert_fixup(tree, grand_parent_node);
   }
-  else
+  else if (uncle_node->color == RBTREE_BLACK)
   {
     if (is_node_left(parent_node) && is_node_left(node))
     {
@@ -188,6 +188,8 @@ void rbtree_insert_fixup(rbtree *tree, node_t *node)
 node_t *rbtree_insert(rbtree *tree, const key_t key)
 {
   node_t *node = (node_t *)malloc(sizeof(node_t));
+  node_t *current_node = tree->root;
+
   node->key = key;
   node->color = RBTREE_RED;
   node->left = node->right = tree->nil;
@@ -200,7 +202,6 @@ node_t *rbtree_insert(rbtree *tree, const key_t key)
     return node;
   }
 
-  node_t *current_node = tree->root;
   while (1)
   {
     if (current_node->key <= key)
@@ -267,16 +268,15 @@ node_t *rbtree_max(const rbtree *tree)
 void rbtree_erase_fixup(rbtree *tree, node_t *parent_node, int is_left)
 {
   node_t *extra_node = is_left ? parent_node->left : parent_node->right;
+  node_t *sibling_node = is_left ? parent_node->right : parent_node->left;
+  node_t *sibling_left = sibling_node->left;
+  node_t *sibling_right = sibling_node->right;
 
   if (extra_node->color == RBTREE_RED)
   {
     extra_node->color = RBTREE_BLACK;
     return;
   }
-
-  node_t *sibling_node = is_left ? parent_node->right : parent_node->left;
-  node_t *sibling_left = sibling_node->left;
-  node_t *sibling_right = sibling_node->right;
 
   if (sibling_node->color == RBTREE_BLACK)
   {
@@ -339,6 +339,7 @@ void rbtree_erase_fixup(rbtree *tree, node_t *parent_node, int is_left)
 void replace_to_successor(rbtree *tree, node_t *p, node_t *successor, node_t *removed_node_parent)
 {
   int has_right_child = (successor->right != tree->nil) ? 1 : 0;
+
   p->key = successor->key;
   if (is_node_left(successor))
   {
@@ -421,6 +422,7 @@ int rbtree_erase(rbtree *tree, node_t *p)
 int rbtree_to_array(const rbtree *tree, key_t *arr, const size_t n)
 {
   node_t *current_node = rbtree_min(tree);
+
   arr[0] = current_node->key;
   for (int i = 1; i < n; i++)
   {
