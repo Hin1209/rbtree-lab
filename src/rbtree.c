@@ -57,7 +57,9 @@ node_t *get_successor(rbtree *t, node_t *p)
     current_node = p;
     while (1)
     {
-      if (current_node->parent->right == current_node)
+      if (is_node_left(current_node))
+        return current_node->parent;
+      else
         current_node = current_node->parent;
       else
         return current_node->parent;
