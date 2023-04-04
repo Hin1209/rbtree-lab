@@ -20,6 +20,41 @@ void delete_rbtree(rbtree *t)
   free(t);
 }
 
+void right_rotate(rbtree *tree, node_t *node)
+{
+  node_t *parent_node = node->parent;
+  node_t *right_child = node->right;
+
+  parent_node->left = right_child;
+  right_child->parent = parent_node;
+
+  if (parent_node == tree->root)
+  {
+    tree->root = node;
+    node->parent = tree->nil;
+  }
+  else
+  {
+    node_t *grand_parent_node = parent_node->parent;
+
+    int is_parent_left;
+    if (grand_parent_node->left == parent_node)
+      is_parent_left = 1;
+    else
+      is_parent_left = 0;
+
+    if (is_parent_left)
+      grand_parent_node->left = node;
+    else
+      grand_parent_node->right = node;
+
+    node->parent = grand_parent_node;
+  }
+
+  parent_node->parent = node;
+  node->right = parent_node;
+}
+
 node_t *rbtree_insert(rbtree *t, const key_t key)
 {
   // TODO: implement insert
