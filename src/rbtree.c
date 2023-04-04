@@ -374,7 +374,6 @@ int rbtree_erase(rbtree *tree, node_t *p)
     {
       tree->root = (left_node == tree->nil) ? right_node : left_node;
       tree->root->color = RBTREE_BLACK;
-      tree->root->parent = tree->nil;
       free(p);
       return 0;
     }
@@ -391,7 +390,6 @@ int rbtree_erase(rbtree *tree, node_t *p)
       return 0;
     }
     rbtree_erase_fixup(tree, removed_node_parent, is_left);
-  }
   return 0;
 }
 
