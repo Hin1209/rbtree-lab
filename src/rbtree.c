@@ -303,28 +303,15 @@ void rbtree_erase_fixup(rbtree *tree, node_t *parent_node, int is_left)
 
 node_t *replace_to_successor(rbtree *tree, node_t *p, node_t *successor, node_t *removed_node_parent)
 {
-  int has_right_child = (successor->right != tree->nil) ? 1 : 0;
   node_t *replace_node = successor->right;
 
   p->key = successor->key;
   if (is_node_left(successor))
-  {
-    removed_node_parent->left = tree->nil;
-    if (has_right_child)
-    {
-      removed_node_parent->left = successor->right;
-      successor->right->parent = removed_node_parent;
-    }
-  }
+    removed_node_parent->left = successor->right;
   else if (!is_node_left(successor))
-  {
-    removed_node_parent->right = tree->nil;
-    if (has_right_child)
-    {
-      removed_node_parent->right = successor->right;
-      successor->right->parent = removed_node_parent;
-    }
-  }
+    removed_node_parent->right = successor->right;
+  successor->right->parent = removed_node_parent;
+
   return replace_node;
 }
 
