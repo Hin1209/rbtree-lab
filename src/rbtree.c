@@ -73,24 +73,19 @@ void right_rotate(rbtree *tree, node_t *node)
 {
   node_t *parent_node = node->parent;
   node_t *right_child = node->right;
+  node_t *grand_parent_node = parent_node->parent;
 
   parent_node->left = right_child;
   right_child->parent = parent_node;
 
   if (parent_node == tree->root)
-  {
     tree->root = node;
-    node->parent = tree->nil;
-  }
-  else
+  else if (parent_node != tree->root)
   {
-    node_t *grand_parent_node = parent_node->parent;
-
     if (is_node_left(parent_node))
       grand_parent_node->left = node;
     else
       grand_parent_node->right = node;
-
     node->parent = grand_parent_node;
   }
 
@@ -106,17 +101,10 @@ void left_rotate(rbtree *tree, node_t *node)
   parent_node->right = left_child;
   left_child->parent = parent_node;
 
-  node->left = parent_node;
-
   if (parent_node == tree->root)
-  {
     tree->root = node;
-    node->parent = tree->nil;
-  }
-  else
+  else if (parent_node != tree->root)
   {
-    node_t *grand_parent_node = parent_node->parent;
-
     if (is_node_left(parent_node))
       grand_parent_node->left = node;
     else
