@@ -260,10 +260,9 @@ node_t *rbtree_max(const rbtree *tree)
 
 void rbtree_erase_fixup(rbtree *tree, node_t *parent_node, int is_left)
 {
-  node_t *extra_node = is_left ? parent_node->left : parent_node->right;
   node_t *sibling_node = is_left ? parent_node->right : parent_node->left;
-  node_t *priority = is_left ? sibling_node->right : sibling_node->left;
-  node_t *secondary = is_left ? sibling_node->left : sibling_node->right;
+  node_t *outside_child = is_left ? sibling_node->right : sibling_node->left;
+  node_t *inside_child = is_left ? sibling_node->left : sibling_node->right;
 
   if (sibling_node->color == RBTREE_RED)
   {
