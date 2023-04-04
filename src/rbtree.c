@@ -43,7 +43,7 @@ void delete_rbtree(rbtree *tree)
   free(tree);
 }
 
-node_t *get_successor(rbtree *tree, node_t *p)
+node_t *get_successor(const rbtree *tree, node_t *p)
 {
   if (p == rbtree_max(tree))
     return tree->nil;
