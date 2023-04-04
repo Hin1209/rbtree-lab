@@ -376,7 +376,7 @@ int rbtree_erase(rbtree *t, node_t *p)
 
   if (right_node != t->nil && left_node != t->nil)
   {
-    node_t *successor_node = get_next_node(t, p);
+    node_t *successor_node = get_successor(t, p);
     p->key = successor_node->key;
     removed_node_parent = successor_node->parent;
     if (removed_node_parent->left == successor_node)
