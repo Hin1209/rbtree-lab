@@ -321,10 +321,9 @@ node_t *replace_to_child(rbtree *tree, node_t *p, node_t *removed_node_parent)
   node_t *right_node = p->right;
   node_t *replace_node;
 
+  replace_node = right_node;
   if (left_node != tree->nil)
     replace_node = left_node;
-  else
-    replace_node = right_node;
 
   if (is_node_left(p))
     removed_node_parent->left = replace_node;
