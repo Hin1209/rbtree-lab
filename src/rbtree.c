@@ -19,6 +19,13 @@ int is_node_left(node_t *p)
   return (p->parent->left == p);
 }
 
+void exchange_color(node_t *p1, node_t *p2)
+{
+  int tmp_color = p1->color;
+  p1->color = p2->color;
+  p2->color = (tmp_color == RBTREE_BLACK) ? RBTREE_BLACK : RBTREE_RED;
+}
+
 void node_is_free(rbtree *t, node_t *p)
 {
   if (p->left != t->nil)
@@ -292,17 +299,13 @@ void rbtree_erase_fixup(rbtree *t, node_t *parent_node, int is_left)
       if (sibling_right->color == RBTREE_RED)
       {
         left_rotate(t, sibling_node);
-        int tmp_color = sibling_node->color;
-        sibling_node->color = parent_node->color;
-        parent_node->color = (tmp_color == RBTREE_BLACK) ? RBTREE_BLACK : RBTREE_RED;
+        exchange_color(sibling_node, parent_node);
         sibling_right->color = RBTREE_BLACK;
       }
       else if (sibling_left->color == RBTREE_RED && sibling_right->color == RBTREE_BLACK)
       {
         right_rotate(t, sibling_node->left);
-        int tmp_color = sibling_node->color;
-        sibling_node->color = sibling_left->color;
-        sibling_left->color = (tmp_color == RBTREE_BLACK) ? RBTREE_BLACK : RBTREE_RED;
+        exchange_color(sibling_node, sibling_left);
         rbtree_erase_fixup(t, parent_node, is_left);
       }
       else if (sibling_left->color == RBTREE_BLACK && sibling_right->color == RBTREE_BLACK)
@@ -318,17 +321,13 @@ void rbtree_erase_fixup(rbtree *t, node_t *parent_node, int is_left)
       if (sibling_left->color == RBTREE_RED)
       {
         right_rotate(t, sibling_node);
-        int tmp_color = sibling_node->color;
-        sibling_node->color = parent_node->color;
-        parent_node->color = (tmp_color == RBTREE_BLACK) ? RBTREE_BLACK : RBTREE_RED;
+        exchange_color(sibling_node, parent_node);
         sibling_left->color = RBTREE_BLACK;
       }
       else if (sibling_right->color == RBTREE_RED && sibling_left->color == RBTREE_BLACK)
       {
         left_rotate(t, sibling_node->right);
-        int tmp_color = sibling_node->color;
-        sibling_node->color = sibling_right->color;
-        sibling_right->color = (tmp_color == RBTREE_BLACK) ? RBTREE_BLACK : RBTREE_RED;
+        exchange_color(sibling_node, sibling_right);
         rbtree_erase_fixup(t, parent_node, is_left);
       }
       else if (sibling_left->color == RBTREE_BLACK && sibling_right->color == RBTREE_BLACK)
@@ -346,9 +345,7 @@ void rbtree_erase_fixup(rbtree *t, node_t *parent_node, int is_left)
       left_rotate(t, sibling_node);
     else
       right_rotate(t, sibling_node);
-    int tmp_color = sibling_node->color;
-    sibling_node->color = parent_node->color;
-    parent_node->color = (tmp_color == RBTREE_BLACK) ? RBTREE_BLACK : RBTREE_RED;
+    exchange_color(sibling_node, parent_node);
     rbtree_erase_fixup(t, parent_node, is_left);
   }
 }
