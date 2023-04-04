@@ -123,6 +123,8 @@ void left_rotate(rbtree *tree, node_t *node)
       grand_parent_node->left = node;
     else
       grand_parent_node->right = node;
+
+    node->parent = grand_parent_node;
   }
   parent_node->parent = node;
 }
@@ -216,6 +218,7 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
   {
     t->root = node;
     node->parent = t->nil;
+    rbtree_insert_fixup(t, node);
     return node;
   }
 
@@ -245,7 +248,7 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
   }
 
   rbtree_insert_fixup(t, node);
-  return t->root;
+  return node;
 }
 
 node_t *rbtree_find(const rbtree *t, const key_t key)
@@ -313,6 +316,14 @@ void rbtree_erase_fixup(rbtree *t, node_t *parent_node, int is_left)
         sibling_right->color = RBTREE_BLACK;
       }
       else if (sibling_left->color == RBTREE_RED && sibling_right->color == RBTREE_BLACK)
+      {
+        right_rotate(t, sibling_node->left);
+        int tmp_color = sibling_node->color;
+        sibling_node->color = sibling_left->color;
+        sibling_left->color = (tmp_color == RBTREE_BLACK) ? RBTREE_BLACK : RBTREE_RED;
+        rbtree_erase_fixup(t, parent_node, is_left);
+      }
+      else if (sibling_left->color == RBTREE_BLACK && sibling_right->color == RBTREE_BLACK)
       {
         sibling_node->color = RBTREE_RED;
         if (parent_node == t->root)
@@ -409,6 +420,40 @@ int rbtree_erase(rbtree *t, node_t *p)
 
     free(successor_node);
   }
+  else
+  {
+    if (p == t->root)
+    {
+      t->root = (left_node == t->nil) ? right_node : left_node;
+      t->root->color = RBTREE_BLACK;
+      t->root->parent = t->nil;
+      free(p);
+      return 0;
+    }
+    removed_node_parent = p->parent;
+    if (removed_node_parent->left == p)
+      is_removed_node_left = 1;
+    else
+      is_removed_node_left = 0;
+    node_t *replace_node;
+    if (left_node == t->nil && right_node == t->nil)
+      replace_node = t->nil;
+    else if (left_node != t->nil)
+      replace_node = left_node;
+    else
+      replace_node = right_node;
+
+    if (is_removed_node_left)
+      removed_node_parent->left = replace_node;
+    else
+      removed_node_parent->right = replace_node;
+
+    replace_node->parent = removed_node_parent;
+    is_removed_black = p->color ? 1 : 0;
+    free(p);
+  }
+  if (is_removed_black)
+    rbtree_erase_fixup(t, removed_node_parent, is_removed_node_left);
   return 0;
 }
 
