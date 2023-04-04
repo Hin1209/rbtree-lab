@@ -143,8 +143,6 @@ void rbtree_insert_fixup(rbtree *tree, node_t *node)
 
   node_t *grand_parent_node = parent_node->parent;
   node_t *uncle_node;
-  int is_parent_left;
-  int is_left_child;
 
   if (is_node_left(parent_node))
     uncle_node = grand_parent_node->right;
