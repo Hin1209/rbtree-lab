@@ -2,7 +2,8 @@
 
 #include <stdlib.h>
 
-rbtree *new_rbtree(void) {
+rbtree *new_rbtree(void)
+{
   rbtree *tree = (rbtree *)calloc(1, sizeof(rbtree));
   // TODO: initialize struct if needed
   node_t *nil = (node_t *)malloc(sizeof(node_t));
